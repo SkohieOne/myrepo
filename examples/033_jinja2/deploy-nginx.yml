@@ -46,4 +46,4 @@
     - name: Habilitar sites-enabled correspondiente
       shell: |
         ln -sf /etc/nginx/sites-available/{{ server_name }}.conf /etc/nginx/sites-enabled/{{ server_name }}.conf 
-        nginx -s reload 
+        /etc/init.d/nginx start # Crea un enlace simbólico en sites-enabled y reinicia nginx
