@@ -1,0 +1,28 @@
+- name: Desplegar configuración inicial nginx
+  hosts: all
+  become: true # Permite ejecutar tareas con privilegios de superusuario
+  vars:
+    nginx_conf_template: "nginx.conf.j2" # Ruta de la plantilla Jinja2 para la configuración de nginx
+  tasks:
+    - name: Instalar nginx
+      apt:
+        name: nginx # Paquete de nginx
+        state: present # Asegura que nginx está instalado
+
+    - name: Asegurar que el directorio de configuración existe
+      file:
+        path: /etc/nginx/sites-available # Directorio donde se guardan las configuraciones de nginx
+        state: directory # Asegura que el directorio de configuración existe
+    
+    - name: Generar archivo de configuración de nginx desde plantilla
+      template:
+        src: "{{ nginx_conf_template }}" # Ruta de la plantilla Jinja2
+        dest: "/etc/nginx/sites-available/{{ server_name }}.conf" # Nombre del archivo basado en el nombre del servidor
+        mode: 0644 # Permisos de archivo
+
+    - name: Habilitar sites-enabled correspondiente
+      shell: |
+        ln -sf /etc/nginx/sites-available/{{ server_name }}.conf /etc/nginx/sites-enabled/{{ server_name }}.conf 
+        nginx -s reload 
+      args:
+        warn: false # Evita advertencias si el enlace ya existe
