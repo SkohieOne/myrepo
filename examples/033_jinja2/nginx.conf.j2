@@ -1,0 +1,18 @@
+server {
+    listen {% if enable_ssl %}443 ssl;{% else %}80;{% endif %}
+
+    server_name {{ server_name }};
+
+    root {{ document_root }};
+    
+    index index.html index.htm;
+
+    location / {
+        try_files $uri $uri/ =404;
+    }
+
+    {% if enable_ssl %}
+    ssl_certificate /etc/nginx/ssl/{{ server_name }}.crt;
+    ssl_certificate_key /etc/nginx/ssl/{{ server_name }}.key;
+    {% endif %}
+}
