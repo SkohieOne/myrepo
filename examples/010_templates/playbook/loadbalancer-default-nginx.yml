@@ -1,0 +1,18 @@
+---
+- hosts: loadbalancer
+  become: true
+  tasks:
+    - name: ensure nginx started
+      service: name=nginx state=started enabled=yes
+
+    - name: de-activate demo nginx site
+      file: path=/etc/nginx/sites-enabled/demo state=absent
+      notify: restart nginx
+
+    - name: activate default nginx site
+      file: src=/etc/nginx/sites-available/default dest=/etc/nginx/sites-enabled/default state=link
+      notify: restart nginx
+
+  handlers:
+    - name: restart nginx
+      service: name=nginx state=restarted

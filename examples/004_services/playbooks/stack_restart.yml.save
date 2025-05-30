@@ -1,0 +1,17 @@
+---
+- hosts: database
+  become: true
+  tasks:
+    - name: reiniciar mysql
+      service: name=mysql state=restarted
+
+- hosts: loadbalancer
+  become: true
+  tasks:
+    - name: reiniciar nginx
+      service: name=nginx state=restarted
+
+- hosts: webserver
+  become: true
+  tasks:
+    service: name=apache2 state=restarted

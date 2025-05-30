@@ -1,0 +1,53 @@
+- name: Levantar instancias EC2 y configurar SSH
+  hosts: localhost
+  gather_facts: no
+  vars:
+    key_name: mi-clave-ec2.pem
+    region: eu-central-1
+    instance_type: t2.micro
+    image: ami-02b7d5b1e55a7b5f1  # Amazon Linux 2023 AMI 2023.7.20250512.0 x86_64 HVM kernel-6.1
+  tasks:
+    - name: Create instances EC2 with SSH key
+      amazon.aws.ec2_instance:
+        name: "{{ item }}"
+        key_name: "{{ key_name }}"
+        region: "{{ region }}"
+        instance_type: "{{ instance_type }}"
+        image_id: "{{ image }}"
+        vpc_subnet_id: subnet-0426901b07d63d0f4 
+      loop:
+        - instancia-curso-ansible-1
+        - instancia-curso-ansible-2
+
+    - name:  Show public instance_types
+      amazon.aws.ec2_instance_info:
+        region: "{{ region }}"
+      register: ec2_info 
+    
+    - name: Show public IPs
+      debug:
+        msg: "Public IP: {{ item.public_ip_address }}"
+      loop: "{{ ec2_info.instances }}"
+
+    - name: Add instances to inventory
+      add_host:
+        name: "{{ item.public_ip_address }}"
+        ansible_user: ec2-user
+        ansible_ssh_private_key_file: "{{ key_name }}"
+      loop: "{{ ec2_info.instances }}"
+    
+    - name: Save EC2 hosts to file
+      copy:
+        content: |
+          [ec2_instances]
+          {% for instance in ec2_info.instances %}
+          {{ instance.public_dns_name }}    {{ instance.public_ip_address }}
+          {% endfor %}
+        dest: ./ec2_hosts.ini
+
+    - name: Delete EC2 instances
+      amazon.aws.ec2_instance:
+        state: absent
+        region: "{{ region }}"
+        instance_ids: "{{ ec2_info.instances | map(attribute='id') | list }}"
+      when: ec2_info.instances | length > 0

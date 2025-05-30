@@ -1,0 +1,6 @@
+# defaults file for nginx
+---
+sites:
+  myappguillem:
+    frontend: 80
+    backend: 80

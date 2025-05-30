@@ -1,0 +1,41 @@
+- name: Ping a Máquina Windows
+  hosts: windows
+  tasks:
+    - name: Ping the Windows machine
+      win_ping:
+      register: ping_result
+
+    - name: Display the ping result
+      debug:
+        var: ping_result
+
+    - name: Create folder C:\Temp if it does not exist
+      win_file:  
+        path: C:\Temp
+        state: directory 
+
+    - name: Download Google Chrome installer
+      win_get_url:
+        url: https://dl.google.com/chrome/install/375.126/chrome_installer.exe
+        dest: C:\Temp\chrome_installer.exe
+
+    - name: Install Google Chrome
+      win_package: 
+        path: C:\Temp\chrome_installer.exe
+        arguments: /silent /install
+        state: present
+    
+    - name: Ensure Google Chrome is installed
+      win_shell: |
+        $chromePath = "C:\Program Files\Google\Chrome\Application\chrome.exe"
+        if (Test-Path $chromePath) {
+          Write-Output "Google Chrome is installed."
+        } else {
+          Write-Output "Google Chrome is not installed."
+          exit 1
+        }
+      register: chrome_check
+
+    - name: Display the Chrome Check result
+      debug:
+        var: chrome_check

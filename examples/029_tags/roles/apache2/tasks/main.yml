@@ -1,0 +1,21 @@
+---
+- name: update apt cache once day
+  apt: update_cache=yes cache_valid_time=86400
+
+- name: install web components
+  apt: name={{item}} state=present
+  with_items:
+    - apache2
+    - libapache2-mod-wsgi-py3
+
+- name: ensure mod_wsgi enabled
+  apache2_module: state=present name=wsgi
+  notify: restart apache2
+
+- name: de-activate default apache site
+  file: path=/etc/apache2/sites-enabled/000-default.conf state=absent
+  tags: [ 'deploy' ]
+  notify: restart apache2
+
+- name: ensure apache2 started
+  service: name=apache2 state=started enabled=yes

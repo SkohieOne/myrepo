@@ -1,0 +1,8 @@
+[database]
+192.168.0.2
+
+[loadbalancer]
+192.168.0.3
+
+[webserver]
+192.168.0.4

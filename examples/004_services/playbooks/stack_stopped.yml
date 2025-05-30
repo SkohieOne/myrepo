@@ -1,0 +1,18 @@
+---
+- hosts: database
+  become: true
+  tasks:
+    - name: parar mysql
+      service: name=mysql state=stopped
+
+- hosts: loadbalancer
+  become: true
+  tasks:
+    - name: parar nginx
+      service: name=nginx state=stopped
+
+- hosts: webserver
+  become: true
+  tasks:
+    - name: parar apache
+      service: name=apache2 state=stopped

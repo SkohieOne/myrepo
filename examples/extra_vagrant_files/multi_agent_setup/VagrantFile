@@ -1,0 +1,39 @@
+Vagrant.configure(2) do |config|
+  config.vm.define "webserver01" do |webserver01|
+    webserver01.vm.box = "bento/ubuntu-18.04"
+    webserver01.vm.network "private_network", ip: "192.168.0.6"
+    webserver01.vm.hostname = "webserver01"
+  end
+  config.vm.define "webserver02" do |webserver02|
+    webserver02.vm.box = "bento/ubuntu-18.04"
+    webserver02.vm.network "private_network", ip: "192.168.0.9"
+    webserver02.vm.hostname = "webserver02"
+  end
+  config.vm.define "database01" do |database01|
+    database01.vm.box = "bento/ubuntu-18.04"
+    database01.vm.network "private_network", ip: "192.168.0.5"
+    database01.vm.hostname = "database01"
+  end
+  config.vm.define "database02" do |database02|
+    database02.vm.box = "bento/ubuntu-18.04"
+    database02.vm.network "private_network", ip: "192.168.0.8"
+    database02.vm.hostname = "database02"
+  end
+  config.vm.define "loadbalancer01" do |loadbalancer01|
+    loadbalancer01.vm.box = "bento/ubuntu-18.04"
+    loadbalancer01.vm.network "private_network", ip: "192.168.0.4"
+    loadbalancer01.vm.hostname = "loadbalancer01"
+  end
+  config.vm.define "loadbalancer02" do |loadbalancer02|
+    loadbalancer02.vm.box = "bento/ubuntu-18.04"
+    loadbalancer02.vm.network "private_network", ip: "192.168.0.7"
+    loadbalancer02.vm.hostname = "loadbalancer02"
+  end
+
+  config.vm.define "ansible" do |ansible|
+    ansible.vm.box = "bento/ubuntu-18.04"
+    ansible.vm.network "private_network", ip: "192.168.0.254"
+    ansible.vm.hostname = "ansible"
+    ansible.vm.provision :shell, :path => "install.sh"
+  end
+end

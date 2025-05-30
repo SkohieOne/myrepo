@@ -1,0 +1,60 @@
+- name: Test Azure Connection
+  hosts: localhost
+  connection: local
+  vars:
+    username: adminuser
+    password: "P@ssw0rd123!"
+  tasks:
+    - name: Crear un grupo de recursos
+      azure_rm_resourcegroup:
+        name: TestCursoAnsibleGroup
+        location: westeurope
+      register: rg
+
+    - name: Crear un conjunto de disponibilidad
+      azure_rm_availabilityset:
+        resource_group: TestCursoAnsibleGroup
+        name: miConjuntoDisponibilidad
+        location: westeurope
+      when: rg is succeeded
+
+    - name: Crear una red virtual
+      azure_rm_virtualnetwork:
+        resource_group: TestCursoAnsibleGroup
+        name: miRedVirtual
+        address_prefixes: "10.0.0.0/16"
+        location: westeurope
+      when: rg is succeeded
+
+    - name: Crear una subred
+      azure_rm_subnet:
+        resource_group: TestCursoAnsibleGroup
+        name: miSubRed
+        address_prefixes: "10.0.1.0/24"
+        virtual_network: miRedVirtual
+      when: rg is succeeded
+
+    - name: Crear una interfaz de red
+      azure_rm_networkinterface:
+        resource_group: TestCursoAnsibleGroup
+        name: miInterfazDeRed
+        location: westeurope
+        virtual_network: miRedVirtual
+        subnet_name: miSubRed
+      when: rg is succeeded
+
+    - name: Crear VM con imagen de Debian 12
+      azure_rm_virtualmachine:
+        resource_group: TestCursoAnsibleGroup
+        name: miMaquinaVirtual
+        admin_username: "{{ username }}"
+        admin_password: "{{ password }}"
+        vm_size:  Standard_B2als_v2
+        network_interfaces: miInterfazDeRed
+        availability_set: miConjuntoDisponibilidad
+        location: westeurope
+        image:
+          offer: Debian-12
+          publisher: Debian
+          sku: 12
+          version: latest
