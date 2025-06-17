@@ -11,10 +11,23 @@
         state: stopped
       when: ansible_facts.services['nginx.service'].state == 'running'
     #Instalar un servidor web (Apache2).
-    - name: Instalación de Apache2
+    - name: Instalación de Apache2, depenencias y PHP
       ansible.builtin.package:
-        name: apache2 #Nombre del paquete a instalar
+        name: "{{ item }}" #Nombre del paquete a instalar
         state: present #Asegura que el paquete esté instalado
+      with_items: #Itera sobre una lista de paquetes
+        - libapache2-mod-php #Módulo de PHP para Apache
+        - php #Paquete PHP
+        - php-mysql #Extensión PHP para MySQL
+        - php-xml #Extensión PHP para XML
+        - php-mbstring #Extensión PHP para manejo de cadenas multibyte
+        - php-curl #Extensión PHP para cURL
+        - php-zip #Extensión PHP para manejo de archivos ZIP
+        - php-gd #Extensión PHP para gráficos y manipulación de imágenes
+        - mariadb-server #Servidor de base de datos MariaDB
+        - mariadb-client #Cliente de base de datos MariaDB
+        - apache2 #Servidor web Apache
+        - apache2-utils #Utilidades de Apache
     #Asegurar de que el servicio de Apache2 està corriendo y habilitado.
     - name: Asegurar que Apache2 está corriendo
       ansible.builtin.service:
@@ -29,9 +42,17 @@
         owner: www-data #Propietario del archivo
         group: www-data #Grupo del archivo
         mode: '0644' #Permisos del archivo
+      notify: 
+        - Reiniciar Apache2 #Notifica a la tarea de reinicio de Apache2 si este archivo cambia
     #Habilita el sitio de Apache2
     - name: Habilitar el sitio de Apache2
       ansible.builtin.shell:
         #Comando para habilitar el sitio de Apache2
         cmd: a2ensite 000-default.conf #Comando para habilitar el sitio 
-#Reinicie el servicio si el archivo de configuración cambia.
+    #Reinicie el servicio si el archivo de configuración cambia.
+  handlers:
+    - name: Reiniciar Apache2
+      ansible.builtin.service:
+        name: apache2 #Nombre del servicio a reiniciar
+        state: restarted #Reinicia el servicio
+      when: ansible_facts.services['apache2.service'].state == 'running' #Solo si el servicio está corriendo
