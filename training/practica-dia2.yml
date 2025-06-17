@@ -1,0 +1,3 @@
+#Instale un servidor web (Nginx o Apache).
+#Copie un archivo de configuración al directorio correspondiente.
+#Reinicie el servicio si el archivo de configuración cambia.

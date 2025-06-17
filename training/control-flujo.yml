@@ -1,0 +1,9 @@
+- name: Prueba de when
+  hosts: all
+  become: yes
+  tasks:
+    - name: Instalar Apache2 si el sistema operativo es Debian
+      apt:
+        name: apache2
+        state: present
+      when: ansible_facts['os_family'] == 'Debian'

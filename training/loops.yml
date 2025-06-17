@@ -1,0 +1,18 @@
+- name: Prueba de multiples usuarios
+  hosts: all
+  become: yes
+  tasks:
+    - name: Instalar el paquete 'python3-passlib'
+      apt:
+        name: python3-passlib
+        state: present
+    
+    - name: Crear múltiples usuarios con contraseñas
+      user:
+        name: "{{ item }}"
+        password: "{{ 'password' | password_hash('sha512') }}"
+        state: present
+      with_items:
+        - user1
+        - user2
+        - user3

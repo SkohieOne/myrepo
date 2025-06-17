@@ -1,0 +1,21 @@
+- name: Instalar Nginx
+  hosts: all
+  become: yes
+  tasks:
+    - name: Instalar Paquete Nginx
+      apt:
+        name: nginx
+        state: present
+
+    - name: Iniciar el servicio Nginx
+      service:
+        name: nginx
+        state: started
+        enabled: yes
+
+    - name: Verificar el estado del servicio Nginx
+      service_facts:
+
+    - name: Mostrar estado del servicio Nginx
+      debug:
+        msg: "El servicio Nginx está {{ ansible_facts.services['nginx.service'].state }}"

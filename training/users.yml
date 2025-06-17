@@ -1,0 +1,19 @@
+- name: Prueba de creación de múltiples usuarios
+  hosts: all
+  become: yes
+  vars:
+    user_password: "password123" # Contraseña en texto plano
+  tasks:
+    - name: Generar hash de la contraseña en el controlador (local)
+      ansible.builtin.set_fact:
+        hashed_password: "{{ user_password | password_hash('sha512') }}"
+
+    - name: Crear múltiples usuarios con contraseñas
+      user:
+        name: "{{ item }}"
+        password: "{{ hashed_password }}" 
+        state: present
+      with_items:
+        - user1
+        - user2
+        - user3

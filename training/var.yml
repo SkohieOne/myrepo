@@ -1,0 +1,20 @@
+- name: Variables para probar
+  hosts: all
+  become: yes
+  vars:
+    ansible_python_interpreter: /usr/bin/python3
+    app_port: 8080
+  tasks:
+    - name: Definir variables de prueba
+      ansible.builtin.set_fact:
+        var1: "Valor de la variable 1"
+        var2: "Valor de la variable 2"
+        var3: "Valor de la variable 3"
+
+    - name: Mostrar las variables definidas
+      ansible.builtin.debug:
+        msg:
+          - "Variable 1: {{ var1 }}"
+          - "Variable 2: {{ var2 }}"
+          - "Variable 3: {{ var3 }}"
+          - "Puerto de la aplicación: {{ app_port }}"

@@ -1,0 +1,23 @@
+- name: Mirar los ansible_facts
+  hosts: all
+  become: yes
+  tasks:
+    - name: Verificar los hechos de Ansible
+      ansible.builtin.debug:
+        var: ansible_facts
+  
+    - name: Mostrar sistema operativo
+      ansible.builtin.debug:
+        msg: "El sistema operativo es {{ ansible_facts['os_family'] }}"
+
+    - name: Mostrar el nombre del host
+      ansible.builtin.debug:
+        msg: "El nombre del host es {{ ansible_facts['nodename'] }}"
+
+    - name: Mostrar la versión del kernel
+      ansible.builtin.debug:
+        msg: "La versión del kernel es {{ ansible_facts['kernel'] }}"
+
+    - name: Mostrar la versión de Ansible
+      ansible.builtin.debug:
+        msg: "La versión de Ansible es {{ ansible_version.full }}"

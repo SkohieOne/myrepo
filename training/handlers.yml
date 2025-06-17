@@ -1,0 +1,15 @@
+- name: Prueba de handlers
+  hosts: all
+  become: yes
+  tasks:
+    - name: Copiar archivo de configuración
+      copy:
+        src: nginx.conf
+        dest: /etc/nginx/nginx.conf
+      notify:
+        - Reiniciar Nginx
+  handlers:
+    - name: Reiniciar Nginx
+      service:
+        name: nginx
+        state: restarted

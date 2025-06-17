@@ -1,0 +1,8 @@
+- name: Instalar editor Joe
+  hosts: all
+  become: yes
+  tasks:
+    - name: Instalar Paquete Joe
+      apt:
+        name: joe
+        state: absent
