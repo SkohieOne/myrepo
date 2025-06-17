@@ -1,3 +1,37 @@
-#Instale un servidor web (Nginx o Apache).
-#Copie un archivo de configuración al directorio correspondiente.
+- name: Práctica Día 2 #Instalación y Configuración de Servidor Web
+  hosts: all #Todos los hosts del inventario
+  become: yes #Para ejecutar tareas con privilegios elevados
+  tasks:
+    #Vamos a parar Nginx si está corriendo
+    - name: Comprueba el estado de Nginx
+      ansible.builtin.service_facts: #Recopila información sobre los servicios
+    - name: Detener Nginx si está activo
+      ansible.builtin.service:
+        name: nginx
+        state: stopped
+      when: ansible_facts.services['nginx.service'].state == 'running'
+    #Instalar un servidor web (Apache2).
+    - name: Instalación de Apache2
+      ansible.builtin.package:
+        name: apache2 #Nombre del paquete a instalar
+        state: present #Asegura que el paquete esté instalado
+    #Asegurar de que el servicio de Apache2 està corriendo y habilitado.
+    - name: Asegurar que Apache2 está corriendo
+      ansible.builtin.service:
+        name: apache2 #Nombre del servicio a gestionar
+        state: started #Asegura que el servicio esté en ejecución
+        enabled: yes #Habilita el servicio para que se inicie al arrancar el sistema
+    #Copia el archivo de configuración hosts de Apache2 al directorio correspondiente
+    - name: Copiar archivo de configuración de hosts de Apache2
+      ansible.builtin.copy:
+        src: hosts.conf #Ruta al archivo de configuración local
+        dest: /etc/apache2/sites-available/000-default.conf #Ruta de destino en el servidor
+        owner: www-data #Propietario del archivo
+        group: www-data #Grupo del archivo
+        mode: '0644' #Permisos del archivo
+    #Habilita el sitio de Apache2
+    - name: Habilitar el sitio de Apache2
+      ansible.builtin.shell:
+        #Comando para habilitar el sitio de Apache2
+        cmd: a2ensite 000-default.conf #Comando para habilitar el sitio 
 #Reinicie el servicio si el archivo de configuración cambia.
