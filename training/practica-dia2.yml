@@ -16,18 +16,19 @@
         name: "{{ item }}" #Nombre del paquete a instalar
         state: present #Asegura que el paquete esté instalado
       with_items: #Itera sobre una lista de paquetes
-        - libapache2-mod-php #Módulo de PHP para Apache
-        - php #Paquete PHP
-        - php-mysql #Extensión PHP para MySQL
-        - php-xml #Extensión PHP para XML
-        - php-mbstring #Extensión PHP para manejo de cadenas multibyte
-        - php-curl #Extensión PHP para cURL
-        - php-zip #Extensión PHP para manejo de archivos ZIP
-        - php-gd #Extensión PHP para gráficos y manipulación de imágenes
-        - mariadb-server #Servidor de base de datos MariaDB
-        - mariadb-client #Cliente de base de datos MariaDB
         - apache2 #Servidor web Apache
         - apache2-utils #Utilidades de Apache
+        - libapache2-mod-php #Módulo de PHP para Apache
+        - mariadb-client #Cliente de base de datos MariaDB
+        - mariadb-server #Servidor de base de datos MariaDB
+        - php #Paquete PHP
+        - php-curl #Extensión PHP para cURL
+        - php-gd #Extensión PHP para gráficos y manipulación de imágenes
+        - php-mbstring #Extensión PHP para manejo de cadenas multibyte
+        - php-memcached #Extensión PHP para Memcached 
+        - php-mysql #Extensión PHP para MySQL
+        - php-xml #Extensión PHP para XML
+        - php-zip #Extensión PHP para manejo de archivos ZIP
     #Asegurar de que el servicio de Apache2 està corriendo y habilitado.
     - name: Asegurar que Apache2 está corriendo
       ansible.builtin.service:
