@@ -1,0 +1,14 @@
+hosts: all
+become: yes
+gather_facts: no
+vars_files:
+  - secret_vars.yml
+  
+tasks:
+  - name: Muestra la contenido de la db_password
+    ansible.builtin.debug:
+      msg: "El secreto es: {{ db_password }}"
+  
+  - name: Muestra la contenido de la api_key
+    ansible.builtin.debug:
+      msg: "La clave de la API es: {{ api_key }}"
