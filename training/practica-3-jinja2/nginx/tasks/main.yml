@@ -2,7 +2,7 @@
 ---
 # tasks file for nginx
 # Asegurar que Apache2 está detenido antes de instalar Nginx
-- name: Asegurar que Apache2 está detenido
+- name: Asegurar que Apache2 está detenido en la máquina
   ansible.builtin.service:
     name: apache2 #Nombre del servicio a gestionar
     state: stopped #Asegura que el servicio esté detenido
