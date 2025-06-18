@@ -13,6 +13,7 @@
     - php-mbstring #Extensión PHP para manejo de cadenas multibyte
     - php-memcached #Extensión PHP para Memcached 
     - php-mysql #Extensión PHP para MySQL
+    - php-tcpdf #Extensión PHP para TCPDF
     - php-xml #Extensión PHP para XML
     - php-zip #Extensión PHP para manejo de archivos ZIP
   notify:
