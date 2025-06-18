@@ -1,0 +1,14 @@
+- become: yes
+  hosts: webserver
+  roles:
+    - role: apache2
+    - role: php
+  
+  hosts: database
+  roles:
+    - role: mariadb
+
+  hosts: loadbalancer
+  roles:
+    - role: nginx
+    - role: users

@@ -1,0 +1,10 @@
+#SPDX-License-Identifier: MIT-0
+---
+# handlers file for apache2
+#Notifica a la tarea de reinicio de Apache2 si este archivo cambia
+- name: Reiniciar Apache2
+  ansible.builtin.service:
+    name: apache2 #Nombre del servicio a reiniciar
+    state: restarted #Reinicia el servicio
+  when: ansible_facts.services['apache2.service'].state == 'running' #Solo si el servicio está corriendo
+  #when: ansible_facts.services['apache2'].state == 'running' #Condición para versiones antiguas

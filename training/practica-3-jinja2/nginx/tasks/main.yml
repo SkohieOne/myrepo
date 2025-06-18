@@ -1,0 +1,46 @@
+#SPDX-License-Identifier: MIT-0
+---
+# tasks file for nginx
+# Asegurar que Apache2 está detenido antes de instalar Nginx
+- name: Asegurar que Apache2 está detenido
+  ansible.builtin.service:
+    name: apache2 #Nombre del servicio a gestionar
+    state: stopped #Asegura que el servicio esté detenido
+  
+#Instalar un servidor web (Nginx).
+- name: Instalación de Nginx
+  ansible.builtin.package:
+    name: "{{ item }}" #Nombre del paquete a instalar
+    state: present #Asegura que el paquete esté instalado
+  with_items: #Itera sobre una lista de paquetes
+    - nginx #Servidor web Nginx
+    - nginx-extras #Paquete adicional de Nginx con características extra
+
+#Asegurar de que el servicio de Nginx està corriendo y habilitado.
+- name: Asegurar que Nginx está corriendo
+  ansible.builtin.service:
+    name: nginx #Nombre del servicio a gestionar
+    state: started #Asegura que el servicio esté en ejecución
+    enabled: yes #Habilita el servicio para que se inicie al arrancar el sistema
+
+#Copia el archivo de configuración hosts de Nginx al directorio correspondiente
+- name: Copiar archivo de configuración de hosts de Nginx
+  ansible.builtin.copy:
+    src: ../files/nginx.conf #Ruta al archivo de configuración local
+    dest: /etc/nginx/sites-available/default #Ruta de destino en el servidor
+    owner: www-data #Propietario del archivo
+    group: www-data #Grupo del archivo
+    mode: '0644' #Permisos del archivo
+  notify: 
+    - Reiniciar Nginx #Notifica a la tarea de reinicio de Nginx si este archivo cambia
+
+#Vamos a parar Nginx si está corriendo
+- name: Comprueba el estado de Nginx
+  ansible.builtin.service_facts: #Recopila información sobre los servicios
+- name: Detener Nginx si está activo
+  ansible.builtin.service:
+    name: nginx
+    state: stopped
+  when: ansible_facts.services['nginx.service'].state == 'running'
+  #Condición para versiones antiguas para detener Nginx solo si está corriendo
+  #when: ansible_facts.services['nginx'].state == 'running' 
