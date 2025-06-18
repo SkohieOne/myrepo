@@ -1,0 +1,13 @@
+#SPDX-License-Identifier: MIT-0
+---
+# tasks file for users
+- name: Generar hash de la contraseña en el controlador (local)
+  ansible.builtin.set_fact:
+    hashed_password: "{{ user_password | password_hash('sha512') }}"
+
+- name: Crear usuarios con contraseña
+  ansible.builtin.user:
+    name: "{{ item }}"
+    password: "{{ hashed_password }}"
+    state: present
+  loop: "{{ user_list }}"
