@@ -16,8 +16,6 @@
     - php-tcpdf #Extensión PHP para TCPDF
     - php-xml #Extensión PHP para XML
     - php-zip #Extensión PHP para manejo de archivos ZIP
-  notify:
-    - Reiniciar Apache2 #Notifica a la tarea de reinicio de Apache2
 
 #Ver si PHP está instalado correctamente
 - name: Verificar la instalación de PHP
@@ -29,3 +27,10 @@
 - name: Mostrar la versión de PHP instalada
   ansible.builtin.debug:
     msg: "Versión de PHP instalada: {{ php_version_output.stdout }}"
+
+# Habilitar el módulo de PHP en Apache
+- name: Habilitar el módulo de PHP en Apache
+  ansible.builtin.command: a2enmod php #Reemplaza 'php' con la versión de PHP instalada
+  args:
+    warn: false #Desactiva las advertencias de Ansible
+  notify: Reiniciar Apache2 #Notifica al manejador de reinicio de Apache2
