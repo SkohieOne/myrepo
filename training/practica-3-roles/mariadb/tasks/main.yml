@@ -2,7 +2,7 @@
 ---
 # tasks file for mariadb
 #Instalar un servidor web (Apache2).
-- name: Instalación de Apache2, depenencias y PHP
+- name: Instalación de MariaDB
   ansible.builtin.package:
     name: "{{ item }}" #Nombre del paquete a instalar
     state: present #Asegura que el paquete esté instalado
