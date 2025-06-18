@@ -31,6 +31,4 @@
 # Habilitar el módulo de PHP en Apache
 - name: Habilitar el módulo de PHP en Apache
   ansible.builtin.command: a2enmod php #Reemplaza 'php' con la versión de PHP instalada
-  args:
-    warn: false #Desactiva las advertencias de Ansible
   notify: Reiniciar Apache2 #Notifica al manejador de reinicio de Apache2
