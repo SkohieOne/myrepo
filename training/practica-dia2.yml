@@ -10,6 +10,8 @@
         name: nginx
         state: stopped
       when: ansible_facts.services['nginx.service'].state == 'running'
+      #Condición para versiones antinguas para detener Nginx solo si está corriendo
+      #when: ansible_facts.services['nginx'].state == 'running' 
     #Instalar un servidor web (Apache2).
     - name: Instalación de Apache2, depenencias y PHP
       ansible.builtin.package:
