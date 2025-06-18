@@ -12,14 +12,14 @@
 - name: Instalar database 
   hosts: database
   become: yes
-  gather_facts: no
+  gather_facts: yes
   roles:
     - role: mariadb
     
 - name: Instalar loadbalancer 
   hosts: loadbalancer
   become: yes
-  gather_facts: no
+  gather_facts: yes
   roles:
     - role: nginx
     - role: users
