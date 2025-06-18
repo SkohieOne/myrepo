@@ -6,5 +6,3 @@
   ansible.builtin.service:
     name: apache2 #Nombre del servicio a reiniciar
     state: restarted #Reinicia el servicio
-  when: ansible_facts.services['apache2.service'].state == 'running' #Solo si el servicio está corriendo
-  #when: ansible_facts.services['apache2'].state == 'running' #Condición para versiones antiguas
