@@ -1,3 +1,11 @@
 #SPDX-License-Identifier: MIT-0
 ---
 # tasks file for mariadb
+#Instalar un servidor web (Apache2).
+- name: Instalación de Apache2, depenencias y PHP
+  ansible.builtin.package:
+    name: "{{ item }}" #Nombre del paquete a instalar
+    state: present #Asegura que el paquete esté instalado
+  with_items: #Itera sobre una lista de paquetes
+    - mariadb-client #Cliente de base de datos MariaDB
+    - mariadb-server #Servidor de base de datos MariaDB
