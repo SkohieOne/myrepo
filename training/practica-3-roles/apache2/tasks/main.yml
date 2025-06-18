@@ -1,3 +1,33 @@
 #SPDX-License-Identifier: MIT-0
 ---
 # tasks file for apache2
+#Instalar un servidor web (Apache2).
+- name: Instalación de Apache2
+  ansible.builtin.package:
+    name: "{{ item }}" #Nombre del paquete a instalar
+    state: present #Asegura que el paquete esté instalado
+  with_items: #Itera sobre una lista de paquetes
+    - apache2 #Servidor web Apache
+    - apache2-utils #Utilidades de Apache
+    - libapache2-mod-php #Módulo de PHP para Apache
+    - apache2-suexec #Módulo de Apache para ejecutar scripts con permisos de usuario
+    - apache2-suexec-custom #Módulo de Apache para ejecutar scripts con permisos de usuario personalizado
+    - apache2-suexec-pristine #Módulo de Apache para ejecutar scripts con permisos de usuario prístino
+
+#Asegurar de que el servicio de Apache2 està corriendo y habilitado.
+- name: Asegurar que Apache2 está corriendo
+  ansible.builtin.service:
+    name: apache2 #Nombre del servicio a gestionar
+    state: started #Asegura que el servicio esté en ejecución
+    enabled: yes #Habilita el servicio para que se inicie al arrancar el sistema
+
+#Copia el archivo de configuración hosts de Apache2 al directorio correspondiente
+- name: Copiar archivo de configuración de hosts de Apache2
+  ansible.builtin.copy:
+    src: ../files/hosts.conf #Ruta al archivo de configuración local
+    dest: /etc/apache2/sites-available/000-default.conf #Ruta de destino en el servidor
+    owner: www-data #Propietario del archivo
+    group: www-data #Grupo del archivo
+    mode: '0644' #Permisos del archivo
+  notify: 
+    - Reiniciar Apache2 #Notifica a la tarea de reinicio de Apache2 si este archivo cambia
