@@ -30,13 +30,5 @@
             <li>{{ interface }}: {{ ansible_facts[interface].ipv4.address }}</li>
         {% endfor %}
     </ul>
-
-    <h2>Available Packages</h2>
-    <ul>
-        {% for package in ansible_pkg_mgr.packages %}
-            <li>{{ package.name }} - {{ package.version }}</li>
-        {% endfor %}
-    </ul>
-
 </body>
 </html>
