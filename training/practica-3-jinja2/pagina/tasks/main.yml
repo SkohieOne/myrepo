@@ -8,8 +8,8 @@
 
 - name: Copiar el archivo index.php al directorio de la pagina web
   copy:
-    src: ../files/index.php
-    dest: /var/www/html/index.php
+    src: ../files/phpinfo.php
+    dest: /var/www/html/phpinfo.php
     owner: www-data
     group: www-data
     mode: '0644'
