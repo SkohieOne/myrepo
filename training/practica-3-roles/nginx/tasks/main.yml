@@ -1,17 +1,6 @@
 #SPDX-License-Identifier: MIT-0
 ---
 # tasks file for nginx
-#Vamos a parar Nginx si está corriendo
-- name: Comprueba el estado de Nginx
-  ansible.builtin.service_facts: #Recopila información sobre los servicios
-- name: Detener Nginx si está activo
-  ansible.builtin.service:
-    name: nginx
-    state: stopped
-  when: ansible_facts.services['nginx.service'].state == 'running'
-  #Condición para versiones antinguas para detener Nginx solo si está corriendo
-  #when: ansible_facts.services['nginx'].state == 'running' 
-
 #Instalar un servidor web (Nginx).
 - name: Instalación de Nginx
   ansible.builtin.package:
@@ -38,3 +27,14 @@
     mode: '0644' #Permisos del archivo
   notify: 
     - Reiniciar Nginx #Notifica a la tarea de reinicio de Nginx si este archivo cambia
+
+#Vamos a parar Nginx si está corriendo
+- name: Comprueba el estado de Nginx
+  ansible.builtin.service_facts: #Recopila información sobre los servicios
+- name: Detener Nginx si está activo
+  ansible.builtin.service:
+    name: nginx
+    state: stopped
+  when: ansible_facts.services['nginx.service'].state == 'running'
+  #Condición para versiones antinguas para detener Nginx solo si está corriendo
+  #when: ansible_facts.services['nginx'].state == 'running' 
