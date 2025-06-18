@@ -1,3 +1,25 @@
 #SPDX-License-Identifier: MIT-0
 ---
 # tasks file for php
+#Instalar PHP
+- name: Instalación de PHP
+  ansible.builtin.package:
+    name: "{{ item }}" #Nombre del paquete a instalar
+    state: present #Asegura que el paquete esté instalado
+  with_items: #Itera sobre una lista de paquetes
+    - php #Paquete PHP
+    - php-curl #Extensión PHP para cURL
+    - php-gd #Extensión PHP para gráficos y manipulación de imágenes
+    - php-mbstring #Extensión PHP para manejo de cadenas multibyte
+    - php-memcached #Extensión PHP para Memcached 
+    - php-mysql #Extensión PHP para MySQL
+    - php-xml #Extensión PHP para XML
+    - php-zip #Extensión PHP para manejo de archivos ZIP
+  notify:
+    - Reiniciar Apache2 #Notifica a la tarea de reinicio de Apache2
+
+#Ver si PHP está instalado correctamente
+- name: Verificar la instalación de PHP
+  ansible.builtin.command: php -v
+  register: php_version_output
+  changed_when: false

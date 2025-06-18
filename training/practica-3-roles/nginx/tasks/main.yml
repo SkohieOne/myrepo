@@ -42,5 +42,5 @@
     name: nginx
     state: stopped
   when: ansible_facts.services['nginx.service'].state == 'running'
-  #Condición para versiones antinguas para detener Nginx solo si está corriendo
+  #Condición para versiones antiguas para detener Nginx solo si está corriendo
   #when: ansible_facts.services['nginx'].state == 'running' 
