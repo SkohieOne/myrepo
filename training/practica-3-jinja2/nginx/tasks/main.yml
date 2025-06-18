@@ -21,6 +21,7 @@
   ansible.builtin.service:
     name: nginx #Nombre del servicio a gestionar
     state: started #Asegura que el servicio esté en ejecución
+  when: ansible_facts.services['nginx.service'].state == 'stopped'
 
 #Copia el archivo de configuración hosts de Nginx al directorio correspondiente
 - name: Copiar archivo de configuración de hosts de Nginx
