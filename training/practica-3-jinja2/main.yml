@@ -1,18 +1,21 @@
-- become: yes
-  hosts: all
+---
+- hosts: all
 - name: Instalar webserver
   hosts: webserver
+  become: yes
   roles:
     - role: apache2
     - role: php
 
 - name: Instalar database 
   hosts: database
+  become: yes
   roles:
     - role: mariadb
     
 - name: Instalar loadbalancer 
   hosts: loadbalancer
+  become: yes
   roles:
     - role: nginx
     - role: users
