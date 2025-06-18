@@ -23,3 +23,8 @@
   ansible.builtin.command: php -v
   register: php_version_output
   changed_when: false
+
+# Mostrar la versión de PHP instalada
+- name: Mostrar la versión de PHP instalada
+  ansible.builtin.debug:
+    msg: "Versión de PHP instalada: {{ php_version_output.stdout }}"
