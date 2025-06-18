@@ -10,7 +10,6 @@
     - apache2 #Servidor web Apache
     - apache2-utils #Utilidades de Apache
     - libapache2-mod-php #Módulo de PHP para Apache
-    - apache2-suexec #Módulo de Apache para ejecutar scripts con permisos de usuario
     - apache2-suexec-custom #Módulo de Apache para ejecutar scripts con permisos de usuario personalizado
     - apache2-suexec-pristine #Módulo de Apache para ejecutar scripts con permisos de usuario prístino
 
