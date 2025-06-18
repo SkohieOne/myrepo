@@ -1,0 +1,28 @@
+#SPDX-License-Identifier: MIT-0
+---
+# tasks file for pagina
+- name: Asegura que el directorio de la pagina web existe
+  file:
+    path: /var/www/html
+    state: directory
+
+- name: Copiar el archivo index.php al directorio de la pagina web
+  copy:
+    src: ../files/index.php
+    dest: /var/www/html/index.php
+    owner: www-data
+    group: www-data
+    mode: '0644'
+
+- name: Generar el archivo dinámico index.html
+  template:
+    src: ../templates/index.html.j2
+    dest: /var/www/html/index.html
+    owner: www-data
+    group: www-data
+    mode: '0644'
+
+- name: Asegurar que Apache2 está corriendo
+  ansible.builtin.service:
+    name: apache2
+    state: restarted

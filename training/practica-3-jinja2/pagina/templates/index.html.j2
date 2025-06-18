@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jinja2 Example</title>
+</head>
+<body>
+    <h1>Welcome to Jinja2 Example</h1>
+    <p>This is a simple example of using Jinja2 templates.</p>
+
+    <h2>Current Date and Time</h2>
+    <p>{{ ansible_date_time.date }}</p>
+    {% if ansible_date_time.time %}
+    <p>{{ ansible_date_time.time }}</p>
+{% else %}
+    <p>Time information is not available.</p>
+{% endif %}
+
+    <h2>System Information</h2>
+    <ul>
+        <li>Hostname: {{ ansible_hostname }}</li>
+        <li>OS: {{ ansible_distribution }} {{ ansible_distribution_version }}</li>
+        <li>Architecture: {{ ansible_architecture }}</li>
+    </ul>
+
+    <h2>Network Interfaces</h2>
+    <ul>
+        {% for interface in ansible_interfaces %}
+            <li>{{ interface }}: {{ ansible_facts[interface].ipv4.address }}</li>
+        {% endfor %}
+    </ul>
+
+    <h2>Available Packages</h2>
+    <ul>
+        {% for package in ansible_pkg_mgr.packages %}
+            <li>{{ package.name }} - {{ package.version }}</li>
+        {% endfor %}
+    </ul>
+
+</body>
+</html>
