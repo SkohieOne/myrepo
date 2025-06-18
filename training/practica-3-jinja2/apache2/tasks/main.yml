@@ -37,3 +37,14 @@
     mode: '0644' #Permisos del archivo
   notify: 
     - Reiniciar Apache2 #Notifica a la tarea de reinicio de Apache2 si este archivo cambia
+
+  #Copia el archivo de configuración hosts de Apache2 al directorio correspondiente
+- name: Copiar archivo DirectoryIndex de Apache2
+  ansible.builtin.copy:
+    src: ../files/dir.conf #Ruta al archivo de configuración local
+    dest: /etc/apache2/mods-enabled/dir.conf #Ruta de destino en el servidor
+    owner: www-data #Propietario del archivo
+    group: www-data #Grupo del archivo
+    mode: '0644' #Permisos del archivo
+  notify: 
+    - Reiniciar Apache2 #Notifica a la tarea de reinicio de Apache2 si este archivo cambia
