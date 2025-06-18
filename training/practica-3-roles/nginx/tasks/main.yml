@@ -6,9 +6,7 @@
   ansible.builtin.service:
     name: apache2 #Nombre del servicio a gestionar
     state: stopped #Asegura que el servicio esté detenido
-  #when: ansible_facts.services['apache2.service'].state == 'running' #Condición para detener Apache2 solo si está corriendo
-  when: ansible_facts.services['apache2'].state == 'running' #Condición para versiones antiguas
-
+  
 #Instalar un servidor web (Nginx).
 - name: Instalación de Nginx
   ansible.builtin.package:
