@@ -21,7 +21,6 @@
   ansible.builtin.service:
     name: nginx #Nombre del servicio a gestionar
     state: started #Asegura que el servicio esté en ejecución
-    enabled: yes #Habilita el servicio para que se inicie al arrancar el sistema
 
 #Copia el archivo de configuración hosts de Nginx al directorio correspondiente
 - name: Copiar archivo de configuración de hosts de Nginx
