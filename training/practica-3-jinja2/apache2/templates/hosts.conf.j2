@@ -1,7 +1,7 @@
 <VirtualHost *:80>
-    ServerAdmin {{ ansible_hostname }}
-    ServerName {{ ansible_hostname }}
-    ServerAlias {{ ansible_hostname }}
+    ServerAdmin {{ ansible_hostname }}@{{ ansible_domain }}
+    ServerName {{ ansible_hostname }}.{{ ansible_domain }}
+    ServerAlias {{ ansible_hostname }}.{{ ansible_domain }} www.{{ ansible_hostname }}.{{ ansible_domain }}
 
     DocumentRoot /var/www/html
 
