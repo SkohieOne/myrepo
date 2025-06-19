@@ -1,0 +1,14 @@
+- name: Instalar editor Joe
+  hosts: all
+  become: yes
+  tasks:
+    - name: Instalar Joe
+      apt:
+        name: joe
+        state: present
+      tags: install
+
+    - name: Mostrar versión de Joe
+      debug:
+        msg: "Joe está instalado, versión: {{ joe_version.stdout }}"
+      tags: version
