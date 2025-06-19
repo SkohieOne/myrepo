@@ -1,0 +1,12 @@
+- name: Manejo de errores en Ansible
+  hosts: all
+  become: yes
+  tasks:
+    - name: Bloque principal
+      block:
+        - name: Tarea que puede fallar
+          command: /bin/false
+      rescue:
+        - name: Manejo de error
+          debug:
+            msg: "La tarea falló, pero hemos manejado el error."
