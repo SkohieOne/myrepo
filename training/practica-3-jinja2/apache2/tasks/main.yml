@@ -1,12 +1,5 @@
 #SPDX-License-Identifier: MIT-0
 ---
-# tasks file for apache2
-# Asegurar que Apache2 está detenido antes de instalar Nginx
-- name: Asegurar que Nginx está detenido en la máquina
-  ansible.builtin.service:
-    name: nginx #Nombre del servicio a gestionar
-    state: stopped #Asegura que el servicio esté detenido
-
 #Instalar un servidor web (Apache2).
 - name: Instalación de Apache2
   ansible.builtin.package:
