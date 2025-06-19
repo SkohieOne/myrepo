@@ -37,8 +37,8 @@
 
 #Copia el archivo de configuración hosts de Nginx al directorio correspondiente
 - name: Copiar archivo de configuración de hosts de Nginx
-  ansible.builtin.copy:
-    src: ../files/nginx.conf #Ruta al archivo de configuración local
+  template: #Utiliza la plantilla para copiar el archivo de configuración
+    src: ../templates/nginx.conf.j2 #Ruta al archivo de configuración local
     dest: /etc/nginx/sites-available/default #Ruta de destino en el servidor
     owner: www-data #Propietario del archivo
     group: www-data #Grupo del archivo
