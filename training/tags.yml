@@ -9,6 +9,5 @@
       tags: install
 
     - name: Mostrar versión de Joe
-      debug:
-        msg: "Joe está instalado, versión: {{ joe_version.stdout }}"
+      shell: ls -lah /usr/bin/joe
       tags: version
