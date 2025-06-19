@@ -28,13 +28,6 @@
     - nginx #Servidor web Nginx
     - nginx-extras #Paquete adicional de Nginx con características extra
 
-#Asegurar de que el servicio de Nginx està corriendo y habilitado.
-- name: Asegurar que Nginx está corriendo
-  ansible.builtin.service:
-    name: nginx #Nombre del servicio a gestionar
-    state: started #Asegura que el servicio esté en ejecución
-    enabled: yes #Habilita el servicio para que se inicie al arrancar el sistema
-
 #Copia el archivo de configuración hosts de Nginx al directorio correspondiente
 - name: Copiar archivo de configuración de hosts de Nginx
   template: #Utiliza la plantilla para copiar el archivo de configuración
@@ -45,6 +38,14 @@
     mode: '0644' #Permisos del archivo
   notify: 
     - Reiniciar Nginx #Notifica a la tarea de reinicio de Nginx si este archivo cambia
+
+#Asegurar de que el servicio de Nginx està corriendo y habilitado.
+- name: Asegurar que Nginx está corriendo
+  ansible.builtin.service:
+    name: nginx #Nombre del servicio a gestionar
+    state: started #Asegura que el servicio esté en ejecución
+    enabled: yes #Habilita el servicio para que se inicie al arrancar el sistema
+
 
 #Vamos a parar Nginx si está corriendo
 - name: Comprueba el estado de Nginx
