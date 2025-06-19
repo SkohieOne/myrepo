@@ -39,7 +39,7 @@
 - name: Copiar archivo de configuración de hosts de Nginx
   template: #Utiliza la plantilla para copiar el archivo de configuración
     src: ../templates/nginx.conf.j2 #Ruta al archivo de configuración local
-    dest: /etc/nginx/sites-available/default #Ruta de destino en el servidor
+    dest: /etc/nginx/nginx.conf #Ruta de destino en el servidor
     owner: www-data #Propietario del archivo
     group: www-data #Grupo del archivo
     mode: '0644' #Permisos del archivo
