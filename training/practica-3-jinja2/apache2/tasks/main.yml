@@ -31,7 +31,7 @@
 - name: Copiar archivo de configuración de hosts de Apache2
   template:
     src: ../templates/hosts.conf.j2 #Ruta al archivo de configuración local
-    dest: /etc/apache2/sites-available/000-default.conf #Ruta de destino en el servidor
+    dest: /etc/apache2/sites-available/{{ ansible_hostname }}.conf #Ruta de destino en el servidor
     owner: www-data #Propietario del archivo
     group: www-data #Grupo del archivo
     mode: '0644' #Permisos del archivo
