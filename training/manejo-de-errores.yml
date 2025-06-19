@@ -10,3 +10,7 @@
         - name: Manejo de error
           debug:
             msg: "La tarea falló, pero hemos manejado el error."
+      always:
+        - name: Tarea que siempre se ejecuta
+          debug:
+            msg: "Esta tarea siempre se ejecuta, independientemente del resultado del bloque."
