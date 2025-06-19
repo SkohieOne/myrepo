@@ -1,17 +1,5 @@
 #SPDX-License-Identifier: MIT-0
 ---
-- name: Asegurar que Nginx está detenido en la máquina
-  ansible.builtin.service:
-    name: nginx #Nombre del servicio a gestionar
-    state: stopped #Asegura que el servicio esté detenido
-
-- name: Recopilar información sobre los servicios
-  ansible.builtin.service_facts: #Recopila información sobre los servicios
-
-- name: Muestra el estado de Nginx
-  ansible.builtin.debug:
-    msg: "El estado de Nginx es: {{ ansible_facts.services['nginx.service'].state }}" #Muestra el estado del servicio Nginx
-  
 #Instalar un servidor web (Nginx).
 - name: Instalación de Nginx
   ansible.builtin.package:
@@ -20,6 +8,10 @@
   with_items: #Itera sobre una lista de paquetes
     - nginx #Servidor web Nginx
     - nginx-extras #Paquete adicional de Nginx con características extra
+
+#Recopilar información sobre el sistema y los servicios
+- name: Recopilar información sobre los servicios
+  ansible.builtin.service_facts: #Recopila información sobre los servicios
 
 #Copia el archivo de configuración hosts de Nginx al directorio correspondiente
 - name: Copiar archivo de configuración de hosts de Nginx
