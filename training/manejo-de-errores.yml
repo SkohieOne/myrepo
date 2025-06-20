@@ -1,6 +1,7 @@
 - name: Manejo de errores en Ansible
   hosts: all
   become: yes
+  tags: manejo_errores
   tasks:
     - name: Bloque principal
       block:
