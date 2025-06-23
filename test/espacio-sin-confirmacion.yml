@@ -59,27 +59,16 @@
         group: root
         mode: '0755'
 
-    - name: Preguntar si desea ejecutar el rotado de logs
-      ansible.builtin.pause:
-        prompt: "¿Desea ejecutar el rotado de logs? (y/n)"
-      register: confirm_rotado
-
     - name: Hacer rotado de logs en /var/log
       ansible.builtin.shell: logrotate -f /etc/logrotate.d/
       when:
         - var_log_space.stdout_lines[1].split()[-2].replace('%','') | int > 85
-        - confirm_rotado.user_input == 'y'
-
-    - name: Preguntar si desea ejecutar journalctl vacuum
-      ansible.builtin.pause:
-        prompt: "¿Desea ejecutar journalctl vacuum? (y/n)"
-      register: confirm_vacuum
 
     - name: Realizar journalctl vacuum
       ansible.builtin.shell: journalctl --vacuum-size=10M
       when:
         - var_log_space.stdout_lines[1].split()[-2].replace('%','') | int > 85
-        - confirm_vacuum.user_input == 'y'
+
 
     - name: Vuelvo a mostrar filesystems con ocupación mayor al 85% para ver si se ha solucionado
       ansible.builtin.debug:
