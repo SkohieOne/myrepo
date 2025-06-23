@@ -1,0 +1,27 @@
+- name: Comprobar espacio en discos
+  hosts: all
+  become: true
+  gather_facts: true
+  tasks:
+    - name: Comprobar espacio en disco
+      ansible.builtin.command: df -h
+      register: disk_space
+
+    - name: Mostrar espacio en disco
+      ansible.builtin.debug:
+        var: disk_space.stdout_lines
+
+    - name: Mostrar los filesystem que estan por encima del 85% de ocupacion y registrar los valores de cada uno de los filesystem
+      ansible.builtin.debug:
+        msg: "Filesystem: {{ item.split()[0] }}, Ocupación: {{ item.split()[-2] }}"
+      loop: "{{ disk_space.stdout_lines | select('search', '^[^ ]+ +[^ ]+ +[^ ]+ +[^ ]+ +[^ ]+ +[^ ]+ +\\d+%') | select('match', '\\d{1,2}%') | select('match', '^[8-9]\\d%') | list }}"
+      when: item is search('\\d{1,2}%')
+
+    - name: Mostrar los archivos que más ocupan en los filesystem con alta ocupación
+      ansible.builtin.command: "du -ah / | sort -rh | head -n 10"
+      register: large_files
+
+    - name: Mostrar archivos grandes
+      ansible.builtin.debug:
+        var: large_files.stdout_lines
+    
