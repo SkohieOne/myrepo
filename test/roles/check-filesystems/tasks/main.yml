@@ -1,0 +1,33 @@
+- name: Comprobar espacio en disco en /var
+  ansible.builtin.shell: df -h /var
+  register: var_space
+
+- name: Comprobar espacio en disco en /var/log
+  ansible.builtin.shell: df -h /var/log
+  register: var_log_space
+
+- name: Comprobar espacio en disco en /home
+  ansible.builtin.shell: df -h /home
+  register: home_space
+
+- name: Comprobar espacio en disco en /tmp
+  ansible.builtin.shell: df -h /tmp
+  register: tmp_space
+
+- name: Comprobar espacio en disco en /opt
+  ansible.builtin.shell: df -h /opt
+  register: opt_space
+
+- name: Comprobar espacio en disco en /usr
+  ansible.builtin.shell: df -h /usr
+  register: usr_space
+
+- name: Mostrar espacio de todos los filesystem registrados anteriormente
+  ansible.builtin.debug:
+    msg:
+      var: "{{ var_space.stdout }}"
+      var_log: "{{ var_log_space.stdout }}"
+      home: "{{ home_space.stdout }}"
+      tmp: "{{ tmp_space.stdout }}"
+      opt: "{{ opt_space.stdout }}"
+      usr: "{{ usr_space.stdout }}"
