@@ -3,6 +3,82 @@
   become: true
   gather_facts: true
   remote_user: vagrant
-  roles:
-    - role: check-filesystems
+  tasks:
+    - name: Comprobar espacio en disco en /var
+      ansible.builtin.shell: df -h /var
+      register: var_space
+   
+    - name: Comprobar espacio en disco en /var/log
+      ansible.builtin.shell: df -h /var/log
+      register: var_log_space
+
+    - name: Mostrar espacio en disco en /home
+      ansible.builtin.shell: df -h /home
+      register: home_space
+
+    - name: Mostrar espacio en disco en /tmp
+      ansible.builtin.shell: df -h /tmp
+      register: tmp_space
+
+    - name: Mostrar espacio en disco en /opt
+      ansible.builtin.shell: df -h /opt
+      register: opt_space
+
+    - name: Mostrar espacio en disco en /usr
+      ansible.builtin.shell: df -h /usr
+      register: usr_space
+
+    - name: Mostrar espacio de todos los filesystem registrados anteriormente
+      ansible.builtin.debug:
+        msg:
+          var: "{{ var_space.stdout }}"
+          var_log: "{{ var_log_space.stdout }}"
+          home: "{{ home_space.stdout }}"
+          tmp: "{{ tmp_space.stdout }}"
+          opt: "{{ opt_space.stdout }}"
+          usr: "{{ usr_space.stdout }}"
+
+    - name: Mostrar filesystems con ocupación mayor al 85%
+      ansible.builtin.debug:
+        msg: "{{ item.stdout_lines[1].split()[0] }}: {{ item.stdout_lines[1].split()[-2] }}"
+      loop:
+        - "{{ var_space }}"
+        - "{{ var_log_space }}"
+        - "{{ home_space }}"
+        - "{{ tmp_space }}"
+        - "{{ opt_space }}"
+        - "{{ usr_space }}"
+      when: >
+        (item.stdout_lines|length > 1) and
+        (item.stdout_lines[1].split()[-2].replace('%','') | int) > 85
+
+    - name: Asegurar permisos de /var/log
+      ansible.builtin.file:
+        path: /var/log
+        owner: root
+        group: root
+        mode: '0755'
+
+    - name: Preguntar si desea ejecutar el rotado de logs
+      ansible.builtin.pause:
+        prompt: "¿Desea ejecutar el rotado de logs? (y/n)"
+      register: confirm_rotado
+
+    - name: Hacer rotado de logs en /var/log
+      ansible.builtin.shell: logrotate -f /etc/logrotate.d/
+      when:
+        - var_log_space.stdout_lines[1].split()[-2].replace('%','') | int > 85
+        - confirm_rotado.user_input == 'y'
+
+    - name: Preguntar si desea ejecutar journalctl vacuum
+      ansible.builtin.pause:
+        prompt: "¿Desea ejecutar journalctl vacuum? (y/n)"
+      register: confirm_vacuum
+
+    - name: Realizar journalctl vacuum
+      ansible.builtin.shell: journalctl --vacuum-size=10M
+      when:
+        - var_log_space.stdout_lines[1].split()[-2].replace('%','') | int > 85
+        - confirm_vacuum.user_input == 'y'
+
     
