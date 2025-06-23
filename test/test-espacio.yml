@@ -19,7 +19,7 @@
       when: item is search('\\d{1,2}%')
 
     - name: Mostrar los archivos que más ocupan en los filesystem con alta ocupación
-      ansible.builtin.command: "du -ah / | sort -rh | head -n 10"
+      ansible.builtin.shell: "du -ah / | sort -rh | head -n 10"
       register: large_files
 
     - name: Mostrar archivos grandes
