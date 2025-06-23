@@ -2,6 +2,7 @@
   hosts: all
   become: true
   gather_facts: true
+  remote_user: vagrant
   tasks:
     - name: Comprobar espacio en disco
       ansible.builtin.command: df -h
