@@ -59,6 +59,21 @@
         group: root
         mode: '0755'
 
+    - name: Asegurarse que en archivo de logrotate de rsyslog esté la línea compress
+      ansible.builtin.lineinfile:
+        path: /etc/logrotate.d/rsyslog
+        regexp: '^\s*compress'
+        line: '    compress'
+        insertafter: '^\s*notifempty'
+        state: present
+
+    - name: Comentar la línea delaycompress en logrotate de rsyslog si existe (activa o comentada)
+      ansible.builtin.replace:
+        path: /etc/logrotate.d/rsyslog
+        regexp: '^\s*#?\s*(delaycompress)'
+        replace: '    #delaycompress'
+
+
     - name: Preguntar si desea ejecutar el rotado de logs
       ansible.builtin.pause:
         prompt: "¿Desea ejecutar el rotado de logs? (y/n)"
