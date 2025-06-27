@@ -66,6 +66,11 @@
         remote_src: yes
         backup: yes
  
+    - name: Descomentar la línea compress en logrotate de rsyslog si está comentada
+      ansible.builtin.replace:
+        path: /etc/logrotate.d/rsyslog
+        regexp: '^\s*#\s*compress'
+        replace: '        compress'
 
     - name: Asegurarse que en archivo de logrotate de rsyslog esté la línea compress
       ansible.builtin.lineinfile:
@@ -74,6 +79,9 @@
         line: '        compress'
         insertafter: '^\s*notifempty'
         state: present
+
+    - name: Si no esta la linea compress en logrotate de rsyslog, añadirla pero preguntando por promp si queremos añadirla
+      ansible.builtin.lineinfile: 
 
     - name: Comentar la línea delaycompress en logrotate de rsyslog si existe (activa o comentada)
       ansible.builtin.replace:
