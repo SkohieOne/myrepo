@@ -80,8 +80,6 @@
         insertafter: '^\s*notifempty'
         state: present
 
-    - name: Si no esta la linea compress en logrotate de rsyslog, añadirla pero preguntando por promp si queremos añadirla
-      ansible.builtin.lineinfile: 
 
     - name: Comentar la línea delaycompress en logrotate de rsyslog si existe (activa o comentada)
       ansible.builtin.replace:

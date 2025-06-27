@@ -1,0 +1,110 @@
+- name: Ampliar espacio en disco
+  hosts: all
+  become: true
+  gather_facts: true
+  remote_user: vagrant
+  tasks:
+    - name: Comprobar espacio en disco en /var
+      ansible.builtin.shell: df -h /var
+      register: var_space
+   
+    - name: Comprobar espacio en disco en /var/log
+      ansible.builtin.shell: df -h /var/log
+      register: var_log_space
+
+    - name: Mostrar espacio en disco en /home
+      ansible.builtin.shell: df -h /home
+      register: home_space
+
+    - name: Mostrar espacio en disco en /tmp
+      ansible.builtin.shell: df -h /tmp
+      register: tmp_space
+
+    - name: Mostrar espacio en disco en /opt
+      ansible.builtin.shell: df -h /opt
+      register: opt_space
+
+    - name: Mostrar espacio en disco en /usr
+      ansible.builtin.shell: df -h /usr
+      register: usr_space
+
+    - name: Mostrar espacio de todos los filesystem registrados anteriormente
+      ansible.builtin.debug:
+        msg:
+          var: "{{ var_space.stdout }}"
+          var_log: "{{ var_log_space.stdout }}"
+          home: "{{ home_space.stdout }}"
+          tmp: "{{ tmp_space.stdout }}"
+          opt: "{{ opt_space.stdout }}"
+          usr: "{{ usr_space.stdout }}"
+
+    - name: Mostrar filesystems con ocupación mayor al 85%
+      ansible.builtin.debug:
+        msg: "{{ item.stdout_lines[1].split()[0] }}: {{ item.stdout_lines[1].split()[-2] }}"
+      loop:
+        - "{{ var_space }}"
+        - "{{ var_log_space }}"
+        - "{{ home_space }}"
+        - "{{ tmp_space }}"
+        - "{{ opt_space }}"
+        - "{{ usr_space }}"
+      when: >
+        (item.stdout_lines|length > 1) and
+        (item.stdout_lines[1].split()[-2].replace('%','') | int) > 85
+
+
+    - name: Comprobar espacio en vg 
+      ansible.builtin.shell: vgs
+      register: vg_space
+
+    - name: Mostrar espacio en vg y comprobar si hay mas de 5GB libres
+      ansible.builtin.debug:
+        msg: "Espacio en VG: {{ vg_space.stdout }}"
+      when: "'VG Size' in vg_space.stdout and 'Free  PE / Size' in vg_space.stdout and (vg_space.stdout.splitlines()[-1].split()[2] | int) > 5"
+      rescue:
+        - name: Mostrar mensaje de error si no hay espacio suficiente
+          ansible.builtin.debug:
+            msg: "No hay suficiente espacio en el VG para ampliar el LV. Se necesitan al menos 5GB libres."
+
+    - name: Obtener nombre del volumen lógico de /var
+      ansible.builtin.shell: lvdisplay -c | grep "/var" | awk -F: '{print $1}'
+      register: lv_var
+      changed_when: false
+
+    - name: Ampliar volumen lógico de /var si está por encima del 85% y hay espacio suficiente en el VG
+      ansible.builtin.shell: lvextend -r -L +512M {{ lv_var.stdout }}
+      when:
+        - (var_space.stdout_lines[1].split()[-2].replace('%','') | int) > 85
+        - "'VG Size' in vg_space.stdout"
+        - "'Free  PE / Size' in vg_space.stdout"
+        - (vg_space.stdout.splitlines()[-1].split()[2] | int) > 5
+    
+    - name: Comprobar espacio en disco en /var después de la ampliación
+      ansible.builtin.shell: df -h /var
+      register: var_space_after
+
+    - name: Mostrar espacio en disco en /var después de la ampliación
+      ansible.builtin.debug:
+        msg: "Espacio en /var después de la ampliación: {{ var_space_after.stdout }}"
+
+    - name: Obtener nombre del volumen lógico de /var/log
+      ansible.builtin.shell: lvdisplay -c | grep "/var/log" | awk -F: '{print $1}'
+      register: lv_var_log
+      changed_when: false
+
+    - name: Ampliar volumen lógico de /var/log si está por encima del 85% y hay espacio suficiente en el VG
+      ansible.builtin.shell: lvextend -r -L +512M {{ lv_var_log.stdout }}
+      when:
+        - (var_log_space.stdout_lines[1].split()[-2].replace('%','') | int) > 85
+        - "'VG Size' in vg_space.stdout"
+        - "'Free  PE / Size' in vg_space.stdout"
+        - (vg_space.stdout.splitlines()[-1].split()[2] | int) > 5
+    
+    - name: Comprobar espacio en disco en /var/log después de la ampliación
+      ansible.builtin.shell: df -h /var/log
+      register: var_log_space_after
+
+    - name: Mostrar espacio en disco en /var/log después de la ampliación
+      ansible.builtin.debug:
+        msg: "Espacio en /var/log después de la ampliación: {{ var_log_space_after.stdout }}"
+
