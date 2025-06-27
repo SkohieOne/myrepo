@@ -52,24 +52,26 @@
         (item.stdout_lines|length > 1) and
         (item.stdout_lines[1].split()[-2].replace('%','') | int) > 85
 
-
     - name: Comprobar espacio en vg 
       ansible.builtin.shell: vgs
       register: vg_space
 
     - name: Mostrar espacio en vg y comprobar si hay mas de 5GB libres
-      ansible.builtin.debug:
-        msg: "Espacio en VG: {{ vg_space.stdout }}"
-      when: "'VG Size' in vg_space.stdout and 'Free  PE / Size' in vg_space.stdout and (vg_space.stdout.splitlines()[-1].split()[2] | int) > 5"
+      block:
+        - name: Mostrar espacio en VG
+          ansible.builtin.debug:
+            msg: "Espacio en VG: {{ vg_space.stdout }}"
+          when: "'VG Size' in vg_space.stdout and 'Free  PE / Size' in vg_space.stdout and (vg_space.stdout.splitlines()[-1].split()[2] | int) > 5"
       rescue:
         - name: Mostrar mensaje de error si no hay espacio suficiente
           ansible.builtin.debug:
             msg: "No hay suficiente espacio en el VG para ampliar el LV. Se necesitan al menos 5GB libres."
 
     - name: Obtener nombre del volumen lógico de /var
-      ansible.builtin.shell: lvdisplay -c | grep "/var" | awk -F: '{print $1}'
+      ansible.builtin.shell: lvdisplay -c | grep '/var' | awk -F '{print $1}'
       register: lv_var
       changed_when: false
+      ignore_errors: true
 
     - name: Ampliar volumen lógico de /var si está por encima del 85% y hay espacio suficiente en el VG
       ansible.builtin.shell: lvextend -r -L +512M {{ lv_var.stdout }}
@@ -88,9 +90,10 @@
         msg: "Espacio en /var después de la ampliación: {{ var_space_after.stdout }}"
 
     - name: Obtener nombre del volumen lógico de /var/log
-      ansible.builtin.shell: lvdisplay -c | grep "/var/log" | awk -F: '{print $1}'
+      ansible.builtin.shell: lvdisplay -c | grep '/var/log' | awk -F '{print $1}'
       register: lv_var_log
       changed_when: false
+      ignore_errors: true
 
     - name: Ampliar volumen lógico de /var/log si está por encima del 85% y hay espacio suficiente en el VG
       ansible.builtin.shell: lvextend -r -L +512M {{ lv_var_log.stdout }}
@@ -99,12 +102,9 @@
         - "'VG Size' in vg_space.stdout"
         - "'Free  PE / Size' in vg_space.stdout"
         - (vg_space.stdout.splitlines()[-1].split()[2] | int) > 5
-    
-    - name: Comprobar espacio en disco en /var/log después de la ampliación
-      ansible.builtin.shell: df -h /var/log
-      register: var_log_space_after
 
-    - name: Mostrar espacio en disco en /var/log después de la ampliación
+    - name: Mostrar espacio en disco en /var/log después de la ampliación solo si se amplió
       ansible.builtin.debug:
-        msg: "Espacio en /var/log después de la ampliación: {{ var_log_space_after.stdout }}"
+        msg: "Espacio en /var/log después de la ampliación: {{ var_log_space.stdout }}"
+      when: lv_var_log.stdout != ""
 
